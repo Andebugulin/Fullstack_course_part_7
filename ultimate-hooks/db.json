@@ -1,0 +1,42 @@
+{
+  "notes": [
+    {
+      "id": 1,
+      "content": "custom-hooks are awesome!"
+    },
+    {
+      "id": 2,
+      "content": "best feature ever <3"
+    },
+    {
+      "content": "hello",
+      "id": 3
+    },
+    {
+      "content": "goodbye",
+      "id": 4
+    }
+  ],
+  "persons": [
+    {
+      "id": 1,
+      "name": "mluukkai",
+      "number": "040-5483923"
+    },
+    {
+      "id": 2,
+      "name": "hellas",
+      "number": "012-123123"
+    },
+    {
+      "name": "mamamia",
+      "number": "+1234",
+      "id": 3
+    },
+    {
+      "name": "papapia",
+      "number": "+4321",
+      "id": 4
+    }
+  ]
+}
