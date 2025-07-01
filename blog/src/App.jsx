@@ -22,7 +22,7 @@ const App = () => {
 
   const blogFormRef = useRef()
 
-  // Check for existing user token on mount
+  // Check_ for existing user token on mount
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogUser')
     if (loggedUserJSON) {
