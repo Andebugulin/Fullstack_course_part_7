@@ -5,10 +5,14 @@ import LoginForm from './components/loginForm'
 import Togglable from './components/toggle'
 import BlogForm from './components/blogForm' 
 import BlogItem from './components/blog'
-
+import { useSelector } from 'react-redux'
+import { setNotification } from './reducers/notificationReducer'
+import { useDispatch } from 'react-redux'
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [notification, setNotification] = useState('')
+  const notification = useSelector(state => state.notification)
+  const dispatch = useDispatch()
+
   const [sortBy, setSortBy] = useState('title')
   const [filterAuthor, setFilterAuthor] = useState('')
 
@@ -50,14 +54,11 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
-      showNotification('Login successful!')
+      dispatch(setNotification('Login successful!'))
     }
     catch (error) {
       console.error('Login error:', error)
-      setNotification('Invalid username or password')
-      setTimeout(() => {
-        setNotification('')
-      }, 3000)
+      dispatch(setNotification('Invalid username or password'))
     }
   }
 
@@ -66,7 +67,7 @@ const App = () => {
     setUser(null)
     blogService.setToken(null)
     setBlogs([])
-    showNotification('Logged out successfully')
+    dispatch(setNotification('Logged out successfully'))
   }
 
   const fetchBlogs = async () => {
@@ -75,7 +76,7 @@ const App = () => {
       setBlogs(blogsData)
     } catch (error) {
       console.error('Fetch blogs error:', error)
-      showNotification('Error fetching blogs')
+      dispatch(setNotification('Error fetching blogs'))
     }
   }
 
@@ -85,10 +86,10 @@ const App = () => {
       const blogData = await blogService.create(blogObject)
       blogFormRef.current.toggleVisibility()
       setBlogs(blogs.concat(blogData))
-      showNotification(`Added blog: ${blogData.title}`)
+      dispatch(setNotification(`Added blog: ${blogData.title}`))
     } catch (error) {
       console.error('Add blog error:', error)
-      showNotification('Error adding blog')
+      dispatch(setNotification('Error adding blog'))
     }
   }
 
@@ -98,10 +99,10 @@ const App = () => {
       const updatedBlog = { likes: currentLikes + 1 }
       const response = await blogService.update(id, updatedBlog)
       setBlogs(blogs.map(blog => blog.id === id ? response : blog))
-      showNotification('Liked!')
+      dispatch(setNotification('Liked!'))
     } catch (error) {
       console.error('Update likes error:', error)
-      showNotification('Like feature not yet implemented in backend')
+      dispatch(setNotification('Like feature not yet implemented in backend'))
     }
   }
 
@@ -112,17 +113,12 @@ const App = () => {
         // You'll need to add a delete method to your blog service
         await blogService.delete(id)
         setBlogs(blogs.filter(blog => blog.id !== id))
-        showNotification(`Deleted blog: ${title}`)
+        dispatch(setNotification(`Deleted blog: ${title}`))
       } catch (error) {
         console.error('Delete blog error:', error)
-        showNotification('Delete feature not yet implemented in backend')
+        dispatch(setNotification('Delete feature not yet implemented in backend'))
       }
     }
-  }
-
-  const showNotification = (message) => {
-    setNotification(message)
-    setTimeout(() => setNotification(''), 3000)
   }
 
   // Filter and sort blogs
