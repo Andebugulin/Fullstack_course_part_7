@@ -10,7 +10,9 @@
     "preview": "vite preview",
     "test:vitest": "vitest run",
     "test:playwright": "playwright test",
-    "test:report": "playwright show-report"
+    "test:report": "playwright show-report",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.8.2",
@@ -33,12 +35,14 @@
     "@vitejs/plugin-react": "^4.4.1",
     "@vitest/coverage-v8": "^3.1.4",
     "eslint": "^9.25.0",
+    "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "eslint-plugin-vitest-globals": "^1.5.0",
     "globals": "^16.0.0",
     "jsdom": "^26.1.0",
     "playwright": "^1.52.0",
+    "prettier": "^3.6.2",
     "vite": "^6.3.5",
     "vitest": "^3.1.4"
   }

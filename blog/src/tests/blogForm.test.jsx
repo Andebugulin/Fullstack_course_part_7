@@ -14,14 +14,14 @@ describe('BlogForm Component', () => {
     const user = userEvent.setup()
 
     render(<BlogForm createBlog={mockCreateBlog} />)
-    
-    const titleInput = screen.getAllByDisplayValue('')[0] 
-    const authorInput = screen.getAllByDisplayValue('')[1] 
-    const urlInput = screen.getAllByDisplayValue('')[2] 
-    const likesInput = screen.getAllByDisplayValue('0')[0] 
+
+    const titleInput = screen.getAllByDisplayValue('')[0]
+    const authorInput = screen.getAllByDisplayValue('')[1]
+    const urlInput = screen.getAllByDisplayValue('')[2]
+    const likesInput = screen.getAllByDisplayValue('0')[0]
 
     await user.type(titleInput, 'New Blog Title')
-    await user.type(authorInput, 'New Author')  
+    await user.type(authorInput, 'New Author')
     await user.type(urlInput, 'https://newexample.com')
     await user.type(likesInput, '5')
 
@@ -35,11 +35,11 @@ describe('BlogForm Component', () => {
     const user = userEvent.setup()
 
     render(<BlogForm createBlog={mockCreateBlog} />)
-    
-    const titleInput = screen.getAllByDisplayValue('')[0] 
-    const authorInput = screen.getAllByDisplayValue('')[1] 
-    const urlInput = screen.getAllByDisplayValue('')[2] 
-    const likesInput = screen.getAllByDisplayValue('0')[0] 
+
+    const titleInput = screen.getAllByDisplayValue('')[0]
+    const authorInput = screen.getAllByDisplayValue('')[1]
+    const urlInput = screen.getAllByDisplayValue('')[2]
+    const likesInput = screen.getAllByDisplayValue('0')[0]
 
     await user.type(titleInput, 'Test Blog')
     await user.type(authorInput, 'Test Author')
@@ -52,9 +52,9 @@ describe('BlogForm Component', () => {
     expect(mockCreateBlog).toHaveBeenCalledTimes(1)
     expect(mockCreateBlog).toHaveBeenCalledWith({
       title: 'Test Blog',
-      author: 'Test Author', 
+      author: 'Test Author',
       url: 'https://test.com',
-      likes: 3
+      likes: 3,
     })
   })
 
@@ -62,10 +62,10 @@ describe('BlogForm Component', () => {
     const user = userEvent.setup()
 
     render(<BlogForm createBlog={mockCreateBlog} />)
-    
-    const titleInput = screen.getAllByDisplayValue('')[0] 
-    const authorInput = screen.getAllByDisplayValue('')[1] 
-    const urlInput = screen.getAllByDisplayValue('')[2] 
+
+    const titleInput = screen.getAllByDisplayValue('')[0]
+    const authorInput = screen.getAllByDisplayValue('')[1]
+    const urlInput = screen.getAllByDisplayValue('')[2]
 
     await user.type(titleInput, 'Test Blog')
     await user.type(authorInput, 'Test Author')
@@ -81,10 +81,10 @@ describe('BlogForm Component', () => {
 
   test('form has required validation', () => {
     render(<BlogForm createBlog={mockCreateBlog} />)
-    
-    const titleInput = screen.getAllByDisplayValue('')[0] 
-    const authorInput = screen.getAllByDisplayValue('')[1] 
-    const urlInput = screen.getAllByDisplayValue('')[2] 
+
+    const titleInput = screen.getAllByDisplayValue('')[0]
+    const authorInput = screen.getAllByDisplayValue('')[1]
+    const urlInput = screen.getAllByDisplayValue('')[2]
 
     expect(titleInput).toBeRequired()
     expect(authorInput).toBeRequired()

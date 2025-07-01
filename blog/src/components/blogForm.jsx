@@ -9,9 +9,8 @@ const BlogForm = ({ createBlog }) => {
     title: '',
     author: '',
     url: '',
-    likes: 0
+    likes: 0,
   })
-  
 
   const addBlog = async (event) => {
     event.preventDefault()
@@ -19,22 +18,29 @@ const BlogForm = ({ createBlog }) => {
       console.log('Adding new blog:', newBlog)
       createBlog(newBlog)
       setNewBlog({ title: '', author: '', url: '', likes: 0 })
-      dispatch(setNotification(`A new blog "${newBlog.title}" by ${newBlog.author} added`, 5))
+      dispatch(
+        setNotification(
+          `A new blog "${newBlog.title}" by ${newBlog.author} added`,
+          5
+        )
+      )
     } catch (error) {
       console.error('Add blog error:', error)
     }
   }
-  
+
   const handleInputChange = (event) => {
     const { name, value } = event.target
     setNewBlog({
       ...newBlog,
-      [name]: name === 'likes' ? Number(value) : value
+      [name]: name === 'likes' ? Number(value) : value,
     })
   }
 
   return (
-    <div style={{ border: '1px solid #ccc', padding: '10px', margin: '10px 0' }}>
+    <div
+      style={{ border: '1px solid #ccc', padding: '10px', margin: '10px 0' }}
+    >
       <h3>Add New Blog</h3>
       <form onSubmit={addBlog}>
         <div style={{ margin: '5px 0' }}>
@@ -86,5 +92,5 @@ const BlogForm = ({ createBlog }) => {
     </div>
   )
 }
-  
+
 export default BlogForm

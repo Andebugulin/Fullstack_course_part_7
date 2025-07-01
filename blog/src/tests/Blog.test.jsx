@@ -11,7 +11,7 @@ const mockBlog = {
   title: 'Test Blog Title',
   author: 'Test Author',
   url: 'https://example.com',
-  likes: 5
+  likes: 5,
 }
 
 beforeEach(() => {
@@ -21,7 +21,7 @@ beforeEach(() => {
 describe('BlogItem Component', () => {
   test('renders blog title and hides details by default', () => {
     render(
-      <BlogItem 
+      <BlogItem
         blog={mockBlog}
         updateLikes={mockUpdateLikes}
         deleteBlog={mockDeleteBlog}
@@ -29,17 +29,17 @@ describe('BlogItem Component', () => {
     )
 
     expect(screen.getByText('Test Blog Title')).toBeInTheDocument()
-    
+
     expect(screen.queryByText('Test Author')).toBeInTheDocument()
-    
+
     expect(screen.getByText('view')).toBeInTheDocument()
   })
 
   test('shows blog details when view button is clicked', async () => {
     const user = userEvent.setup()
-    
+
     render(
-      <BlogItem 
+      <BlogItem
         blog={mockBlog}
         updateLikes={mockUpdateLikes}
         deleteBlog={mockDeleteBlog}
@@ -51,15 +51,15 @@ describe('BlogItem Component', () => {
 
     expect(screen.getByText('https://example.com')).toBeInTheDocument()
     expect(screen.getByText('5')).toBeInTheDocument()
-    
+
     expect(screen.getByText('hide')).toBeInTheDocument()
   })
 
   test('calls updateLikes when like button is clicked', async () => {
     const user = userEvent.setup()
-    
+
     render(
-      <BlogItem 
+      <BlogItem
         blog={mockBlog}
         updateLikes={mockUpdateLikes}
         deleteBlog={mockDeleteBlog}
@@ -67,7 +67,7 @@ describe('BlogItem Component', () => {
     )
 
     await user.click(screen.getByText('view'))
-    
+
     const likeButton = screen.getByText('👍 Like')
     await user.click(likeButton)
 
@@ -77,9 +77,9 @@ describe('BlogItem Component', () => {
 
   test('calls updateLikes double times when like button is clicked twice', async () => {
     const user = userEvent.setup()
-    
+
     render(
-      <BlogItem 
+      <BlogItem
         blog={mockBlog}
         updateLikes={mockUpdateLikes}
         deleteBlog={mockDeleteBlog}
@@ -87,7 +87,7 @@ describe('BlogItem Component', () => {
     )
 
     await user.click(screen.getByText('view'))
-    
+
     const likeButton = screen.getByText('👍 Like')
     await user.click(likeButton)
     await user.click(likeButton)
@@ -100,10 +100,13 @@ describe('BlogItem Component', () => {
   test('calls deleteBlog when delete button is clicked and confirmed', async () => {
     const user = userEvent.setup()
 
-    vi.stubGlobal('confirm', vi.fn(() => true))
-    
+    vi.stubGlobal(
+      'confirm',
+      vi.fn(() => true)
+    )
+
     render(
-      <BlogItem 
+      <BlogItem
         blog={mockBlog}
         updateLikes={mockUpdateLikes}
         deleteBlog={mockDeleteBlog}
@@ -111,22 +114,22 @@ describe('BlogItem Component', () => {
     )
 
     await user.click(screen.getByText('view'))
-    
+
     const deleteButton = screen.getByText('Delete')
     await user.click(deleteButton)
 
     expect(mockDeleteBlog).toHaveBeenCalledTimes(1)
     expect(mockDeleteBlog).toHaveBeenCalledWith('1', 'Test Blog Title')
-    
+
     vi.unstubAllGlobals()
   })
 
   test('handles blog with no likes', async () => {
     const user = userEvent.setup()
     const blogWithoutLikes = { ...mockBlog, likes: undefined }
-    
+
     render(
-      <BlogItem 
+      <BlogItem
         blog={blogWithoutLikes}
         updateLikes={mockUpdateLikes}
         deleteBlog={mockDeleteBlog}
@@ -134,18 +137,18 @@ describe('BlogItem Component', () => {
     )
 
     await user.click(screen.getByText('view'))
-    
+
     expect(screen.getByText('0')).toBeInTheDocument()
-    
+
     await user.click(screen.getByText('👍 Like'))
     expect(mockUpdateLikes).toHaveBeenCalledWith('1', 0)
   })
 
   test('verifies mock function calls using mock.calls array', async () => {
     const user = userEvent.setup()
-    
+
     render(
-      <BlogItem 
+      <BlogItem
         blog={mockBlog}
         updateLikes={mockUpdateLikes}
         deleteBlog={mockDeleteBlog}
