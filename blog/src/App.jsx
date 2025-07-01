@@ -10,7 +10,7 @@ import { setNotification } from './reducers/notificationReducer'
 import { useDispatch } from 'react-redux'
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const notification = useSelector(state => state.notification)
+  const notification = useSelector(state => state.notifications)
   const dispatch = useDispatch()
 
   const [sortBy, setSortBy] = useState('title')
