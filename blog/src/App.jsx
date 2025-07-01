@@ -93,7 +93,7 @@ const App = () => {
     }
   }
 
-  // Update blog likes - you'll need to add this to your blog service
+  //  Update blog likes - you'll need to add this to your blog service
   const updateLikes = async (id, currentLikes) => {
     try {
       const updatedBlog = { likes: currentLikes + 1 }
