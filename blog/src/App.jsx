@@ -5,10 +5,12 @@ import LoginForm from './components/loginForm'
 import Togglable from './components/toggle'
 import BlogForm from './components/blogForm' 
 import BlogItem from './components/blog'
+import { useNotification } from './contexts/notificationContext'
+import Notification from './components/notification'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [notification, setNotification] = useState('')
+  const {showNotification} = useNotification()
   const [sortBy, setSortBy] = useState('title')
   const [filterAuthor, setFilterAuthor] = useState('')
 
@@ -50,14 +52,11 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
-      showNotification('Login successful!')
+      showNotification('Login successful!', 'success')
     }
     catch (error) {
       console.error('Login error:', error)
-      setNotification('Invalid username or password')
-      setTimeout(() => {
-        setNotification('')
-      }, 3000)
+      showNotification('Invalid username or password', 'error') 
     }
   }
 
@@ -66,7 +65,7 @@ const App = () => {
     setUser(null)
     blogService.setToken(null)
     setBlogs([])
-    showNotification('Logged out successfully')
+    showNotification('Logged out successfully', 'success')
   }
 
   const fetchBlogs = async () => {
@@ -75,7 +74,7 @@ const App = () => {
       setBlogs(blogsData)
     } catch (error) {
       console.error('Fetch blogs error:', error)
-      showNotification('Error fetching blogs')
+      showNotification('Error fetching blogs', 'error')
     }
   }
 
@@ -120,11 +119,6 @@ const App = () => {
     }
   }
 
-  const showNotification = (message) => {
-    setNotification(message)
-    setTimeout(() => setNotification(''), 3000)
-  }
-
   // Filter and sort blogs
   const filteredAndSortedBlogs = blogs
     .filter(blog => 
@@ -148,18 +142,7 @@ const App = () => {
     <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
       {user === null ? (
         <Togglable buttonLabel='login'>
-        {notification && (
-          <div style={{
-            padding: '10px',
-            margin: '10px 0',
-            backgroundColor: '#dff0d8',
-            border: '1px solid #d6e9c6',
-            borderRadius: '4px',
-            color: '#3c763d'
-          }}>
-            {notification}
-          </div>
-        )}
+          <Notification />
           <LoginForm
             username={username}
             password={password}
@@ -174,22 +157,10 @@ const App = () => {
             <p>{user.name} logged-in</p>
             <button onClick={handleLogout}>Logout</button>
           </div>
+          <Notification />
           
           <h1>Blog List</h1>
           
-          {notification && (
-            <div style={{
-              padding: '10px',
-              margin: '10px 0',
-              backgroundColor: '#dff0d8',
-              border: '1px solid #d6e9c6',
-              borderRadius: '4px',
-              color: '#3c763d'
-            }}>
-              {notification}
-            </div>
-          )}
-
           <Togglable buttonLabel="new blog" ref={blogFormRef}>
               <BlogForm
               createBlog={addBlog}
