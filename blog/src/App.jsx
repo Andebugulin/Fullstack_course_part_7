@@ -8,8 +8,10 @@ import BlogItem from './components/blog'
 import { useSelector } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer'
 import { useDispatch } from 'react-redux'
+import { clearBlogs, initializeBlogs, updateBlog } from './reducers/blogReducer'
+
 const App = () => {
-  const [blogs, setBlogs] = useState([])
+  const blogs = useSelector((state) => state.blogs)
   const notification = useSelector((state) => state.notifications)
   const dispatch = useDispatch()
 
@@ -65,14 +67,14 @@ const App = () => {
     window.localStorage.removeItem('loggedBlogUser')
     setUser(null)
     blogService.setToken(null)
-    setBlogs([])
+    dispatch(clearBlogs())
     dispatch(setNotification('Logged out successfully'))
   }
 
   const fetchBlogs = async () => {
     try {
       const blogsData = await blogService.getAll()
-      setBlogs(blogsData)
+      dispatch(initializeBlogs(blogsData))
     } catch (error) {
       console.error('Fetch blogs error:', error)
       dispatch(setNotification('Error fetching blogs'))
@@ -84,7 +86,7 @@ const App = () => {
       console.log('Adding blog:', blogObject)
       const blogData = await blogService.create(blogObject)
       blogFormRef.current.toggleVisibility()
-      setBlogs(blogs.concat(blogData))
+      dispatch(addBlog(blogData))
       dispatch(setNotification(`Added blog: ${blogData.title}`))
     } catch (error) {
       console.error('Add blog error:', error)
@@ -97,7 +99,7 @@ const App = () => {
     try {
       const updatedBlog = { likes: currentLikes + 1 }
       const response = await blogService.update(id, updatedBlog)
-      setBlogs(blogs.map((blog) => (blog.id === id ? response : blog)))
+      dispatch(updateBlog(response))
       dispatch(setNotification('Liked!'))
     } catch (error) {
       console.error('Update likes error:', error)
@@ -111,7 +113,7 @@ const App = () => {
       try {
         // You'll need to add a delete method to your blog service
         await blogService.delete(id)
-        setBlogs(blogs.filter((blog) => blog.id !== id))
+        dispatch(deleteBlog(id))
         dispatch(setNotification(`Deleted blog: ${title}`))
       } catch (error) {
         console.error('Delete blog error:', error)
