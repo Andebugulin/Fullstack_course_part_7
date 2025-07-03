@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer'
 import { useDispatch } from 'react-redux'
 import { clearBlogs, initializeBlogs, updateBlog } from './reducers/blogReducer'
+import { loginUser, logoutUser } from './reducers/userReducer'
 
 const App = () => {
   const blogs = useSelector((state) => state.blogs)
@@ -18,7 +19,7 @@ const App = () => {
   const [sortBy, setSortBy] = useState('title')
   const [filterAuthor, setFilterAuthor] = useState('')
 
-  const [user, setUser] = useState(null)
+  const user = useSelector((state) => state.user)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
@@ -29,7 +30,7 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      setUser(user)
+      dispatch(loginUser(user))
       blogService.setToken(user.token)
     }
   }, [])
@@ -53,7 +54,7 @@ const App = () => {
       window.localStorage.setItem('loggedBlogUser', JSON.stringify(user))
       blogService.setToken(user.token)
       console.log('token set:', user.token)
-      setUser(user)
+      dispatch(loginUser(user))
       setUsername('')
       setPassword('')
       dispatch(setNotification('Login successful!'))
@@ -65,7 +66,7 @@ const App = () => {
 
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogUser')
-    setUser(null)
+    dispatch(logoutUser())
     blogService.setToken(null)
     dispatch(clearBlogs())
     dispatch(setNotification('Logged out successfully'))
