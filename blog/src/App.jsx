@@ -14,12 +14,13 @@ import { loginUser, logoutUser } from './reducers/userReducer'
 const App = () => {
   const blogs = useSelector((state) => state.blogs)
   const notification = useSelector((state) => state.notifications)
+  const user = useSelector((state) => state.user)
+  
   const dispatch = useDispatch()
 
   const [sortBy, setSortBy] = useState('title')
   const [filterAuthor, setFilterAuthor] = useState('')
 
-  const user = useSelector((state) => state.user)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
