@@ -7,9 +7,15 @@ import BlogForm from './components/blogForm'
 import BlogItem from './components/blog'
 import { useNotification } from './contexts/notificationContext'
 import Notification from './components/notification'
+import { useBlogs, useCreateBlog, useDeleteBlog, useUpdateBlog } from './hooks/useBlogQueries'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
+  const blogsQuery = useBlogs()
+  const createBlog = useCreateBlog()
+  const updateBlog = useUpdateBlog()
+  const deleteBlog = useDeleteBlog()
+
+  const blogs = blogsQuery.data || []
   const {showNotification} = useNotification()
   const [sortBy, setSortBy] = useState('title')
   const [filterAuthor, setFilterAuthor] = useState('')
@@ -30,12 +36,7 @@ const App = () => {
     }
   }, [])
 
-  // Fetch blogs when user is logged in
-  useEffect(() => {
-    if (user) {
-      fetchBlogs()
-    }
-  }, [user])
+
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -53,6 +54,8 @@ const App = () => {
       setUsername('')
       setPassword('')
       showNotification('Login successful!', 'success')
+
+      blogsQuery.refetch()
     }
     catch (error) {
       console.error('Login error:', error)
@@ -64,58 +67,44 @@ const App = () => {
     window.localStorage.removeItem('loggedBlogUser')
     setUser(null)
     blogService.setToken(null)
-    setBlogs([])
     showNotification('Logged out successfully', 'success')
-  }
 
-  const fetchBlogs = async () => {
-    try {
-      const blogsData = await blogService.getAll()
-      setBlogs(blogsData)
-    } catch (error) {
-      console.error('Fetch blogs error:', error)
-      showNotification('Error fetching blogs', 'error')
-    }
+    blogsQuery.refetch()
   }
 
   const addBlog = async (blogObject) => {
     try {
-      console.log('Adding blog:', blogObject)
-      const blogData = await blogService.create(blogObject)
+      await createBlog.mutate(blogObject)
       blogFormRef.current.toggleVisibility()
-      setBlogs(blogs.concat(blogData))
-      showNotification(`Added blog: ${blogData.title}`)
+      showNotification(`Added blog: ${blogObject.title}`, 'success')
     } catch (error) {
-      console.error('Add blog error:', error)
-      showNotification('Error adding blog')
+      console.error('Create blog error:', error)
+      showNotification('Error creating blog', 'error')
     }
   }
 
   // Update blog likes - you'll need to add this to your blog service
   const updateLikes = async (id, currentLikes) => {
     try {
-      const updatedBlog = { likes: currentLikes + 1 }
-      const response = await blogService.update(id, updatedBlog)
-      setBlogs(blogs.map(blog => blog.id === id ? response : blog))
-      showNotification('Liked!')
+      await updateBlog.mutateAsync({ 
+      id, 
+      updatedBlog: { likes: currentLikes + 1 }
+      })
+      showNotification('Liked!', 'success')
     } catch (error) {
       console.error('Update likes error:', error)
-      showNotification('Like feature not yet implemented in backend')
+      showNotification('Error updating likes', 'error')
     }
   }
 
   // Delete blog - you'll need to add this to your blog service
-  const deleteBlog = async (id, title) => {
-    if (window.confirm(`Delete blog: ${title}?`)) {
-      try {
-        // You'll need to add a delete method to your blog service
-        await blogService.delete(id)
-        setBlogs(blogs.filter(blog => blog.id !== id))
-        showNotification(`Deleted blog: ${title}`)
-      } catch (error) {
-        console.error('Delete blog error:', error)
-        showNotification('Delete feature not yet implemented in backend')
-      }
+  const handleDeleteBlog = async (id, title) => {
+    try {
+      await deleteBlog.mutateAsync(id)
+      showNotification(`Deleted blog: ${title}`, 'success')
+    } catch (error) {
+      console.error('Delete blog error:', error)
+      showNotification('Error deleting blog', 'error')
     }
   }
 
@@ -198,7 +187,7 @@ const App = () => {
               key={blog.id} 
               blog={blog} 
               updateLikes={updateLikes} 
-              deleteBlog={deleteBlog}
+              deleteBlog={handleDeleteBlog}
               currentUser={user}  
             />            ))
           )}
