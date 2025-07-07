@@ -8,19 +8,20 @@ import BlogItem from './components/blog'
 import { useNotification } from './contexts/notificationContext'
 import Notification from './components/notification'
 import { useBlogs, useCreateBlog, useDeleteBlog, useUpdateBlog } from './hooks/useBlogQueries'
+import { useUser } from './contexts/userContext'
 
 const App = () => {
   const blogsQuery = useBlogs()
   const createBlog = useCreateBlog()
   const updateBlog = useUpdateBlog()
   const deleteBlog = useDeleteBlog()
+  const { user, loginUser, logoutUser } = useUser()
 
   const blogs = blogsQuery.data || []
   const {showNotification} = useNotification()
   const [sortBy, setSortBy] = useState('title')
   const [filterAuthor, setFilterAuthor] = useState('')
 
-  const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
@@ -31,7 +32,7 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      setUser(user)
+      loginUser(user, user.token)
       blogService.setToken(user.token)
     }
   }, [])
@@ -50,7 +51,7 @@ const App = () => {
       window.localStorage.setItem('loggedBlogUser', JSON.stringify(user))
       blogService.setToken(user.token)
       console.log('token set:', user.token)
-      setUser(user)
+      loginUser(user, user.token)
       setUsername('')
       setPassword('')
       showNotification('Login successful!', 'success')
@@ -65,7 +66,7 @@ const App = () => {
 
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogUser')
-    setUser(null)
+    logoutUser()
     blogService.setToken(null)
     showNotification('Logged out successfully', 'success')
 

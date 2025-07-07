@@ -5,6 +5,7 @@ const BlogItem = ({ blog, updateLikes, deleteBlog, currentUser }) => {
 
     const toggleVisibility = () => {
         setBlogVisible(!blogVisible)
+        console.log('user'  , currentUser)
     }
 
     return (
